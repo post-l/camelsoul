@@ -1,4 +1,6 @@
-camelsoul
+Camelsoul
 =========
 
-A C++ netsoul client
+Camelsoul is a C++ netsoul client
+
+login: post_l
