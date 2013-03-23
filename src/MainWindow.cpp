@@ -5,7 +5,7 @@
 // Login   <post_l@epitech.net>
 //
 // Started on  Mon Nov 12 21:50:09 2012 ludovic post
-// Last update Sat Mar 23 22:41:06 2013 ludovic post
+// Last update Sat Mar 23 23:06:08 2013 ludovic post
 //
 
 #include "MainWindow.hpp"
@@ -186,16 +186,16 @@ void MainWindow::showMessage()
 
 void MainWindow::about()
 {
-  QMessageBox::about(this, tr("Camelsoul About"),
-		     tr("Camelsoul is a netsoul messaging client\n"	\
-			"Camel is funky\n"				\
-			"All camel reserved to post_l"));
+  QMessageBox::about(this, "Camelsoul About",
+		     "Camelsoul is a netsoul messaging client\n"	\
+		     "Camel is funky\n"					\
+		     "All camel reserved to post_l");
 }
 
 void MainWindow::addBuddy()
 {
-  QString	buddy = QInputDialog::getText(this, tr("Add Buddy"),
-					      tr("&User name:"));
+  QString	buddy = QInputDialog::getText(this, "Add Buddy",
+					      "&User name:");
 
   if (!buddy.isEmpty())
     {
@@ -258,23 +258,23 @@ void MainWindow::setIcon()
 
 void MainWindow::createConnectActions()
 {
-
-  showListAction = new QAction(tr("Show Buddy &List"), this);
+  // Find icon for this action
+  showListAction = new QAction("Show Buddy &List", this);
   connect(showListAction, SIGNAL(triggered()), this, SLOT(changeMainWindowState()));
 
-  quitAction = new QAction(tr("&Quit"), this);
+  quitAction = new QAction(QIcon::fromTheme("application-exit"),"&Quit", this);
   connect(quitAction, SIGNAL(triggered()), this, SLOT(aboutToQuit()));
 
-  manageAccountAction = new QAction(tr("&Manage Account"),this);
+  manageAccountAction = new QAction(QIcon::fromTheme("document-properties"), "&Manage Account",this);
   connect(manageAccountAction, SIGNAL(triggered()), _manageAccountDlg, SLOT(show()));
 
-  aboutAction = new QAction(tr("&About"), this);
+  aboutAction = new QAction(QIcon::fromTheme("help-about"),"&About", this);
   connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
-  addBuddyAction = new QAction(tr("&Add Buddy"), this);
+  addBuddyAction = new QAction(QIcon::fromTheme("list-add"), "&Add Buddy", this);
   connect(addBuddyAction, SIGNAL(triggered()), this, SLOT(addBuddy()));
 
-  deleteBuddyAction = new QAction(tr("&Delete Buddy"), this);
+  deleteBuddyAction = new QAction(QIcon::fromTheme("list-remove"), "&Delete Buddy", this);
   connect(deleteBuddyAction, SIGNAL(triggered()), this, SLOT(deleteBuddy()));
 }
 
