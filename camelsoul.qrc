@@ -1,4 +1,5 @@
-<!DOCTYPE RCC><RCC version="1.0">
+<!DOCTYPE RCC>
+<RCC version="1.0">
   <qresource prefix="/">
     <file>images/main_icon.png</file>
     <file>images/available.png</file>

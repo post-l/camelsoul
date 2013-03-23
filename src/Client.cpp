@@ -5,7 +5,7 @@
 // Login   <post_l@epitech.net>
 //
 // Started on  Thu Nov 15 21:23:31 2012 ludovic post
-// Last update Fri Mar  1 11:19:35 2013 ludovic post
+// Last update Sat Mar 23 22:41:29 2013 ludovic post
 //
 
 #include <QSettings>
@@ -17,12 +17,12 @@
 #include "netsoul_define.hpp"
 
 Client::Client(QObject *window)
-  : m_last_cmd(NO_CMD)
+  : _last_cmd(NO_CMD)
 {
-  m_socket = new QTcpSocket(this);
-  connect(m_socket, SIGNAL(readyRead()), this, SLOT(readData()));
-  connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(socketError(QAbstractSocket::SocketError)));
-  connect(m_socket, SIGNAL(disconnected()), window, SLOT(disconnected()));
+  _socket = new QTcpSocket(this);
+  connect(_socket, SIGNAL(readyRead()), this, SLOT(readData()));
+  connect(_socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(socketError(QAbstractSocket::SocketError)));
+  connect(_socket, SIGNAL(disconnected()), window, SLOT(disconnected()));
   connect(this, SIGNAL(readyMessage(QString)), window, SLOT(readMessage(QString)));
   connect(this, SIGNAL(readyBuddyMessage(const QString&, const QString&)),
 	  window, SLOT(handleBuddyMessage(const QString&, const QString&)));
@@ -35,7 +35,7 @@ Client::Client(QObject *window)
 
 void Client::sendMessage(const QString &message)
 {
-  QTextStream	socketInputStream(m_socket);
+  QTextStream	socketInputStream(_socket);
 
   socketInputStream << message << endl;
   qDebug() << "Client: " << message;
@@ -43,7 +43,7 @@ void Client::sendMessage(const QString &message)
 
 void Client::refreshBuddyWatch()
 {
-  if (m_socket->state() == QTcpSocket::ConnectedState)
+  if (_socket->state() == QTcpSocket::ConnectedState)
     {
       QString	contacts = QSettings().value("account/contacts").toString();
       if (!contacts.isEmpty())
@@ -99,30 +99,30 @@ void		Client::connectMe()
 {
   QSettings	settings;
 
-  m_socket->abort();
-  m_socket->connectToHost(settings.value("account/server").toString(),
+  _socket->abort();
+  _socket->connectToHost(settings.value("account/server").toString(),
 			  settings.value("account/port").toInt());
 }
 
 void		Client::changeStatus(int index)
 {
-  if (m_socket->state() != QTcpSocket::ConnectedState && (!index || index == 1))
+  if (_socket->state() != QTcpSocket::ConnectedState && (!index || index == 1))
     connectMe();
   else if (!index)
     sendMessage(QString(NS_CMD_USR) + ' ' + NS_STATE + " actif");
   else if (index == 1)
     sendMessage(QString(NS_CMD_USR) + ' ' + NS_STATE + " away");
   else
-      m_socket->abort();
+      _socket->abort();
 }
 
 void Client::readData()
 {
   QString	line;
 
-  while (m_socket->canReadLine())
+  while (_socket->canReadLine())
     {
-      line = m_socket->readLine();
+      line = _socket->readLine();
       if (!line.isEmpty())
 	{
 	  line.resize(line.length() - 1);
@@ -132,10 +132,10 @@ void Client::readData()
 	      if (stringList[0] == NS_PING)
 		sendMessage(line);
 	      else if (line == NS_NO_SUCH_CMD)
-		m_last_cmd = NO_CMD;
-	      else if (m_last_cmd == NB_ASK_AUTH)
+		_last_cmd = NO_CMD;
+	      else if (_last_cmd == NB_ASK_AUTH)
 		log_cmd(line);
-	      else if (m_last_cmd == NB_USR_LOG)
+	      else if (_last_cmd == NB_USR_LOG)
 		log_end_cmd(line);
 	      else if (stringList[0] == NS_SALUT)
 		salut_cmd(stringList);
@@ -143,7 +143,7 @@ void Client::readData()
 		get_usr_cmd(line, stringList[1]);
 	      else if (line == NS_LOGIN_FAIL)
 		{
-		  m_socket->abort();
+		  _socket->abort();
 		  emit error("User identification fail");
 		}
 	      emit readyMessage(line);
@@ -155,15 +155,15 @@ void Client::readData()
 void Client::socketError(QAbstractSocket::SocketError socketError)
 {
   (void)socketError;
-  emit error(m_socket->errorString());
+  emit error(_socket->errorString());
 }
 
 void Client::salut_cmd(const QStringList &stringList)
 {
-  m_hash = stringList[2];
-  m_host = stringList[3];
-  m_port = stringList[4];
-  m_last_cmd = NB_ASK_AUTH;
+  _hash = stringList[2];
+  _host = stringList[3];
+  _port = stringList[4];
+  _last_cmd = NB_ASK_AUTH;
   sendMessage(NS_ASK_AUTH);
 }
 
@@ -174,27 +174,27 @@ void Client::log_cmd(const QString &line)
 
   if (line != NS_CMD_END)
     {
-      m_last_cmd = NO_CMD;
+      _last_cmd = NO_CMD;
       return;
     }
   settings.beginGroup("account");
-  md5sum.addData(m_hash.toAscii());
+  md5sum.addData(_hash.toAscii());
   md5sum.addData("-");
-  md5sum.addData(m_host.toAscii());
+  md5sum.addData(_host.toAscii());
   md5sum.addData("/");
-  md5sum.addData(m_port.toAscii() + settings.value("password").toString().toAscii());
+  md5sum.addData(_port.toAscii() + settings.value("password").toString().toAscii());
   sendMessage(QString(NS_USR_LOG)
 	      + ' ' + settings.value("username").toString()
 	      + ' ' + md5sum.result().toHex()
 	      + ' ' + url_encode(settings.value("location").toString())
 	      + ' ' + url_encode(settings.value("comment").toString()));
-  m_last_cmd = NB_USR_LOG;
+  _last_cmd = NB_USR_LOG;
   settings.endGroup();
 }
 
 void Client::log_end_cmd(const QString &line)
 {
-  m_last_cmd = NO_CMD;
+  _last_cmd = NO_CMD;
   if (line == NS_CMD_END)
     {
       sendMessage(QString(NS_STATE) + " actif");

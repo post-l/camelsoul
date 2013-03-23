@@ -1,11 +1,11 @@
-HEADERS         = MainWindow.hpp                \
-                  ChatWidget.hpp                \
-                  ManageAccountDialog.hpp       \
-                  Client.hpp
+HEADERS         = src/MainWindow.hpp                    \
+                  src/ChatWidget.hpp                    \
+                  src/ManageAccountDialog.hpp           \
+                  src/Client.hpp
 
-SOURCES         = main.cpp                      \
-                  MainWindow.cpp                \
-                  Client.cpp
+SOURCES         = src/main.cpp                          \
+                  src/MainWindow.cpp                    \
+                  src/Client.cpp
 
 fclean.commands = $(RM) $(TARGET)
 fclean.depends = clean

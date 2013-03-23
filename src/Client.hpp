@@ -5,7 +5,7 @@
 // Login   <post_l@epitech.net>
 //
 // Started on  Thu Nov 15 21:23:45 2012 ludovic post
-// Last update Sun Feb 17 22:33:44 2013 ludovic post
+// Last update Sat Mar 23 22:41:38 2013 ludovic post
 //
 
 #ifndef __CLIENT_HPP__
@@ -44,11 +44,11 @@ private:
   void		get_who_cmd(const QStringList &info, const QStringList &cmd);
   void		get_message_cmd(const QStringList &info, const QStringList &cmd);
 
-  QTcpSocket	*m_socket;
-  QString	m_hash;
-  QString	m_host;
-  QString	m_port;
-  int		m_last_cmd;
+  QTcpSocket	*_socket;
+  QString	_hash;
+  QString	_host;
+  QString	_port;
+  int		_last_cmd;
 };
 
 #endif

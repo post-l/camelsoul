@@ -5,7 +5,7 @@
 // Login   <post_l@epitech.net>
 //
 // Started on  Tue Nov 13 22:59:02 2012 ludovic post
-// Last update Tue Dec  4 21:31:35 2012 ludovic post
+// Last update Sat Mar 23 22:43:41 2013 ludovic post
 //
 
 #ifndef	__MANAGEACCOUNTDIALOG_HPP__
@@ -31,24 +31,24 @@ public:
     settings.beginGroup("account");
     QTabWidget	*onglets = new QTabWidget(this);
     QWidget	*basic = new QWidget;
-    usernameEdit = new QLineEdit(settings.value("username").toString());
-    passwordEdit = new QLineEdit(settings.value("password").toString());
-    passwordEdit->setEchoMode(QLineEdit::Password);
+    _usernameEdit = new QLineEdit(settings.value("username").toString());
+    _passwordEdit = new QLineEdit(settings.value("password").toString());
+    _passwordEdit->setEchoMode(QLineEdit::Password);
     QFormLayout	*basicBox = new QFormLayout;
-    basicBox->addRow("&Username", usernameEdit);
-    basicBox->addRow("&Password", passwordEdit);
+    basicBox->addRow("&Username", _usernameEdit);
+    basicBox->addRow("&Password", _passwordEdit);
     basic->setLayout(basicBox);
 
     QWidget	*advanced = new QWidget;
-    serverEdit = new QLineEdit(settings.value("server", "ns-server.epita.fr").toString());
-    portEdit = new QLineEdit(settings.value("port", "4242").toString());
-    locationEdit = new QLineEdit(settings.value("location", "maison").toString());
-    commentEdit = new QLineEdit(settings.value("comment", "Camelsoul").toString());
+    _serverEdit = new QLineEdit(settings.value("server", "ns-server.epita.fr").toString());
+    _portEdit = new QLineEdit(settings.value("port", "4242").toString());
+    _locationEdit = new QLineEdit(settings.value("location", "maison").toString());
+    _commentEdit = new QLineEdit(settings.value("comment", "Camelsoul").toString());
     QFormLayout	*advancedBox = new QFormLayout;
-    advancedBox->addRow("&Server: ", serverEdit);
-    advancedBox->addRow("&Port: ", portEdit);
-    advancedBox->addRow("&Location: ", locationEdit);
-    advancedBox->addRow("&Comment: ", commentEdit);
+    advancedBox->addRow("&Server: ", _serverEdit);
+    advancedBox->addRow("&Port: ", _portEdit);
+    advancedBox->addRow("&Location: ", _locationEdit);
+    advancedBox->addRow("&Comment: ", _commentEdit);
     advanced->setLayout(advancedBox);
 
     onglets->addTab(basic, "&Basic");
@@ -73,22 +73,22 @@ private slots:
     QSettings	settings;
 
     settings.beginGroup("account");
-    settings.setValue("username", usernameEdit->text());
-    settings.setValue("password", passwordEdit->text());
-    settings.setValue("server", serverEdit->text());
-    settings.setValue("port", portEdit->text());
-    settings.setValue("location", locationEdit->text());
-    settings.setValue("comment", commentEdit->text());
+    settings.setValue("username", _usernameEdit->text());
+    settings.setValue("password", _passwordEdit->text());
+    settings.setValue("server", _serverEdit->text());
+    settings.setValue("port", _portEdit->text());
+    settings.setValue("location", _locationEdit->text());
+    settings.setValue("comment", _commentEdit->text());
     settings.endGroup();
     hide();
   }
 private:
-  QLineEdit	*usernameEdit;
-  QLineEdit	*passwordEdit;
-  QLineEdit	*serverEdit;
-  QLineEdit	*portEdit;
-  QLineEdit	*locationEdit;
-  QLineEdit	*commentEdit;
+  QLineEdit	*_usernameEdit;
+  QLineEdit	*_passwordEdit;
+  QLineEdit	*_serverEdit;
+  QLineEdit	*_portEdit;
+  QLineEdit	*_locationEdit;
+  QLineEdit	*_commentEdit;
 };
 
 #endif

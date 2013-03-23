@@ -5,7 +5,7 @@
 // Login   <post_l@epitech.net>
 //
 // Started on  Mon Nov 12 21:50:09 2012 ludovic post
-// Last update Wed Feb 20 12:00:50 2013 ludovic post
+// Last update Sat Mar 23 22:41:06 2013 ludovic post
 //
 
 #include "MainWindow.hpp"
@@ -17,8 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
     _awayImg(":/images/away.png"),
     _offlineImg(":/images/offline.png")
 {
-  m_manageAccountDlg = new ManageAccountDialog(this);
-  m_client = new Client(this);
+  _manageAccountDlg = new ManageAccountDialog(this);
+  _client = new Client(this);
   createConnectActions();
   createTrayIcon();
   // --------------- Menu Bar -------------------
@@ -34,30 +34,30 @@ MainWindow::MainWindow(QWidget *parent)
   QMenu		*helpMenu = menuBar()->addMenu("&Help");
   helpMenu->addAction(aboutAction);
   // ------------ Central Widget -----------------
-  m_tabWidget = new QTabWidget;
-  m_tabWidget->setTabsClosable(true);
-  m_tabWidget->setMovable(true);
-  connect(m_tabWidget, SIGNAL(tabCloseRequested(int)),
+  _tabWidget = new QTabWidget;
+  _tabWidget->setTabsClosable(true);
+  _tabWidget->setMovable(true);
+  connect(_tabWidget, SIGNAL(tabCloseRequested(int)),
 	  this, SLOT(tabClose(int)));
   //------------- Main Tab Widget ---------------
-  m_mainTabWidget = new QWidget;
+  _mainTabWidget = new QWidget;
   QVBoxLayout	*mainLayout = new QVBoxLayout;
-  m_contact_list = new QListWidget;
-  m_contact_list->setSortingEnabled(true);
-  connect(m_contact_list, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+  _contact_list = new QListWidget;
+  _contact_list->setSortingEnabled(true);
+  connect(_contact_list, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
 	  this, SLOT(contactSelected(QListWidgetItem*)));
-  mainLayout->addWidget(m_contact_list);
-  m_current_status = new QComboBox;
-  m_current_status->addItem(_availableImg, "Available");
-  m_current_status->addItem(_awayImg, "Away");
-  m_current_status->addItem(_offlineImg, "Offline");
-  connect(m_current_status, SIGNAL(currentIndexChanged(int)),
-	  m_client, SLOT(changeStatus(int)));
-  mainLayout->addWidget(m_current_status);
-  m_mainTabWidget->setLayout(mainLayout);
-  m_tabWidget->addTab(m_mainTabWidget, "&Buddy List");
+  mainLayout->addWidget(_contact_list);
+  _current_status = new QComboBox;
+  _current_status->addItem(_availableImg, "Available");
+  _current_status->addItem(_awayImg, "Away");
+  _current_status->addItem(_offlineImg, "Offline");
+  connect(_current_status, SIGNAL(currentIndexChanged(int)),
+	  _client, SLOT(changeStatus(int)));
+  mainLayout->addWidget(_current_status);
+  _mainTabWidget->setLayout(mainLayout);
+  _tabWidget->addTab(_mainTabWidget, "&Buddy List");
   //----------------------------------------------
-  setCentralWidget(m_tabWidget);
+  setCentralWidget(_tabWidget);
   setIcon();
   trayIcon->show();
   readSettings();
@@ -69,7 +69,7 @@ void MainWindow::connected()
   QSettings	settings;
 
   qDebug() << "Connected";
-  m_current_status->setCurrentIndex(0);
+  _current_status->setCurrentIndex(0);
   QString	contacts_str = settings.value("account/contacts").toString();
   if (!contacts_str.isEmpty())
     {
@@ -79,7 +79,7 @@ void MainWindow::connected()
 	  QListWidgetItem	*item = new QListWidgetItem;
 	  item->setText(contact);
 	  item->setIcon(_offlineImg);
-	  m_contact_list->addItem(item);
+	  _contact_list->addItem(item);
 	}
     }
 }
@@ -94,8 +94,8 @@ void MainWindow::disconnected()
   qDebug() << "Disconnected";
   trayIcon->showMessage("Disconnected", "You've been disconnected !",
 			QSystemTrayIcon::MessageIcon(2), 4000);
-  m_current_status->setCurrentIndex(2);
-  m_contact_list->clear();
+  _current_status->setCurrentIndex(2);
+  _contact_list->clear();
 }
 
 void MainWindow::handleError(QString error)
@@ -104,10 +104,10 @@ void MainWindow::handleError(QString error)
   trayIcon->showMessage("Disconnected", "You've been disconnected !\n" + error
 			+ "\nReconnection in 10 sec...",
 			QSystemTrayIcon::MessageIcon(2), 4000);
-  m_current_status->setCurrentIndex(2);
-  m_contact_list->clear();
+  _current_status->setCurrentIndex(2);
+  _contact_list->clear();
   if (error != "User identification fail")
-    QTimer::singleShot(10000, m_client, SLOT(connectMe()));
+    QTimer::singleShot(10000, _client, SLOT(connectMe()));
 }
 
 void MainWindow::handleBuddyMessage(const QString &buddy, const QString &msg)
@@ -115,29 +115,29 @@ void MainWindow::handleBuddyMessage(const QString &buddy, const QString &msg)
   qDebug() << buddy << ": " << msg;
   trayIcon->showMessage(buddy, msg,
 			QSystemTrayIcon::MessageIcon(1), 4000);
-  for (int i = 0; i != m_tabWidget->count(); ++i)
-    if (m_tabWidget->tabText(i) == buddy)
+  for (int i = 0; i != _tabWidget->count(); ++i)
+    if (_tabWidget->tabText(i) == buddy)
       {
-	dynamic_cast<ChatWidget*>(m_tabWidget->widget(i))->appendBuddyMsg(msg);
+	dynamic_cast<ChatWidget*>(_tabWidget->widget(i))->appendBuddyMsg(msg);
 	return;
       }
-  ChatWidget	*newTab = new ChatWidget(buddy, m_me, m_client);
+  ChatWidget	*newTab = new ChatWidget(buddy, _me, _client);
   newTab->appendBuddyMsg(msg);
-  m_tabWidget->setCurrentIndex(m_tabWidget->addTab(newTab, buddy));
+  _tabWidget->setCurrentIndex(_tabWidget->addTab(newTab, buddy));
 }
 
 void MainWindow::changeBuddyStatus(const QString &buddy, const QString &state)
 {
   qDebug() << buddy << ": " << state;
-  for (int i = 0; i < m_contact_list->count(); ++i)
-    if (m_contact_list->item(i)->text() == buddy)
+  for (int i = 0; i < _contact_list->count(); ++i)
+    if (_contact_list->item(i)->text() == buddy)
       {
 	if (state == "actif" || state == NS_LOGIN)
-	  m_contact_list->item(i)->setIcon(_availableImg);
+	  _contact_list->item(i)->setIcon(_availableImg);
 	else if (state == "away")
-	  m_contact_list->item(i)->setIcon(_awayImg);
+	  _contact_list->item(i)->setIcon(_awayImg);
 	else
-	  m_contact_list->item(i)->setIcon(_offlineImg);
+	  _contact_list->item(i)->setIcon(_offlineImg);
 	return;
       }
 }
@@ -208,43 +208,43 @@ void MainWindow::addBuddy()
       settings.setValue("account/contacts", contacts);
       item->setText(buddy);
       item->setIcon(_offlineImg);
-      m_contact_list->addItem(item);
-      m_client->refreshBuddyWatch();
+      _contact_list->addItem(item);
+      _client->refreshBuddyWatch();
     }
 }
 
 void MainWindow::deleteBuddy()
 {
-  QListWidgetItem	*item = m_contact_list->currentItem();
+  QListWidgetItem	*item = _contact_list->currentItem();
   QSettings		settings;
   QString		buddy = item->text();
   QString		contacts = settings.value("account/contacts").toString();
 
   settings.setValue("account/contacts", contacts.remove(QRegExp(buddy + ",?|," + buddy + '$')));
-  delete m_contact_list->takeItem(m_contact_list->row(item));
-  m_client->refreshBuddyWatch();
+  delete _contact_list->takeItem(_contact_list->row(item));
+  _client->refreshBuddyWatch();
 }
 
 void MainWindow::contactSelected(QListWidgetItem *item)
 {
   QString	contact = item->text();
-  int		tab_count = m_tabWidget->count();
+  int		tab_count = _tabWidget->count();
 
   for (int i = 0; i != tab_count; i++)
-    if (m_tabWidget->tabText(i) == contact)
+    if (_tabWidget->tabText(i) == contact)
       {
-	m_tabWidget->setCurrentIndex(i);
+	_tabWidget->setCurrentIndex(i);
 	return;
       }
-  QWidget	*newTab = new ChatWidget(contact, m_me, m_client);
-  m_tabWidget->setCurrentIndex(m_tabWidget->addTab(newTab, contact));
+  QWidget	*newTab = new ChatWidget(contact, _me, _client);
+  _tabWidget->setCurrentIndex(_tabWidget->addTab(newTab, contact));
 }
 
 void MainWindow::tabClose(int index)
 {
-  QWidget	*widget = m_tabWidget->widget(index);
+  QWidget	*widget = _tabWidget->widget(index);
 
-  if (widget != m_mainTabWidget)
+  if (widget != _mainTabWidget)
     widget->deleteLater();
 }
 
@@ -266,7 +266,7 @@ void MainWindow::createConnectActions()
   connect(quitAction, SIGNAL(triggered()), this, SLOT(aboutToQuit()));
 
   manageAccountAction = new QAction(tr("&Manage Account"),this);
-  connect(manageAccountAction, SIGNAL(triggered()), m_manageAccountDlg, SLOT(show()));
+  connect(manageAccountAction, SIGNAL(triggered()), _manageAccountDlg, SLOT(show()));
 
   aboutAction = new QAction(tr("&About"), this);
   connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
@@ -312,5 +312,5 @@ void MainWindow::readSettings()
   resize(settings.value("size", QSize(400, 300)).toSize());
   move(settings.value("pos", QPoint(200, 200)).toPoint());
   settings.endGroup();
-  m_me = settings.value("account/username").toString();
+  _me = settings.value("account/username").toString();
 }

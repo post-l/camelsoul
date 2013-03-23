@@ -5,7 +5,7 @@
 ** Login   <post_l@epitech.net>
 **
 ** Started on  Mon Nov 12 21:49:51 2012 ludovic post
-// Last update Sun Mar 10 09:29:40 2013 ludovic post
+// Last update Sat Mar 23 22:41:53 2013 ludovic post
 */
 
 #ifndef __MAINWINDOW_H__
@@ -56,20 +56,20 @@ private:
   QMenu			*trayIconMenu;
   QSystemTrayIcon	*trayIcon;
 
-  QTabWidget		*m_tabWidget;
-  QWidget		*m_mainTabWidget;
+  QTabWidget		*_tabWidget;
+  QWidget		*_mainTabWidget;
 
-  QListWidget		*m_contact_list;
-  QComboBox		*m_current_status;
+  QListWidget		*_contact_list;
+  QComboBox		*_current_status;
 
-  ManageAccountDialog	*m_manageAccountDlg;
-  Client		*m_client;
+  ManageAccountDialog	*_manageAccountDlg;
+  Client		*_client;
 
   QIcon			_availableImg;
   QIcon			_awayImg;
   QIcon			_offlineImg;
 
-  QString		m_me;
+  QString		_me;
 };
 
 #endif
