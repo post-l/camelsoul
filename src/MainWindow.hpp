@@ -1,12 +1,12 @@
-/*
-** MainWindow.hpp for camelsoul in /home/post_l/Dropbox/Programmation/camelsoul
-**
-** Made by ludovic post
-** Login   <post_l@epitech.net>
-**
-** Started on  Mon Nov 12 21:49:51 2012 ludovic post
-// Last update Sat Mar 23 22:41:53 2013 ludovic post
-*/
+//
+// MainWindow.hpp for camelsoul in /home/post_l/git/camelsoul
+//
+// Made by ludovic post
+// Login   <post_l@epitech.net>
+//
+// Started on  Sun Mar 24 11:29:46 2013 ludovic post
+// Last update Sun Mar 24 11:36:36 2013 ludovic post
+//
 
 #ifndef __MAINWINDOW_H__
 #define __MAINWINDOW_H__
@@ -46,21 +46,21 @@ private:
   void		writeSettings();
   void		readSettings();
 
-  QAction	*showListAction;
-  QAction	*quitAction;
-  QAction	*manageAccountAction;
-  QAction	*aboutAction;
-  QAction	*addBuddyAction;
-  QAction	*deleteBuddyAction;
+  QAction	*_showListAction;
+  QAction	*_quitAction;
+  QAction	*_manageAccountAction;
+  QAction	*_aboutAction;
+  QAction	*_addBuddyAction;
+  QAction	*_deleteBuddyAction;
 
-  QMenu			*trayIconMenu;
-  QSystemTrayIcon	*trayIcon;
+  QMenu			*_trayIconMenu;
+  QSystemTrayIcon	*_trayIcon;
 
   QTabWidget		*_tabWidget;
   QWidget		*_mainTabWidget;
 
-  QListWidget		*_contact_list;
-  QComboBox		*_current_status;
+  QListWidget		*_contactList;
+  QComboBox		*_currentStatus;
 
   ManageAccountDialog	*_manageAccountDlg;
   Client		*_client;

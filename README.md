@@ -1,6 +1,6 @@
 Camelsoul
 =========
 
-Camelsoul is a C++ QT netsoul client
+Camelsoul is a C++ Qt netsoul client
 
 login: post_l

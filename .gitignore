@@ -1,0 +1,15 @@
+# Object files
+obj/*
+
+# Makefile
+Makefile
+
+# Qt moc files
+moc_*.cpp
+src/moc_*.cpp
+
+# Qt qrc.cpp file
+qrc_camelsoul.cpp
+
+# Executable
+camelsoul

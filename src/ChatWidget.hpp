@@ -5,7 +5,7 @@
 // Login   <post_l@epitech.net>
 //
 // Started on  Sun Dec  2 23:51:23 2012 ludovic post
-// Last update Sat Mar 23 22:40:45 2013 ludovic post
+// Last update Sun Mar 24 12:24:08 2013 ludovic post
 //
 
 #ifndef	__CHATWIDGET_HPP__
@@ -32,23 +32,25 @@ public:
     connect(_sendText, SIGNAL(returnPressed()), this, SLOT(handleSendText()));
     mainLayout->addWidget(_conversation);
     mainLayout->addWidget(_sendText);
-    /*
-    mainLayout->setStretch(0, 4);
-    mainLayout->setStretch(1, 1);
-    */
+    // mainLayout->setStretch(0, 4);
+    // mainLayout->setStretch(1, 1);
     setLayout(mainLayout);
   }
 
   void		appendBuddyMsg(const QString &msg)
   {
-    _conversation->append(_buddy + ": " + msg);
+    QTime time = QTime::currentTime();
+    _conversation->append("<b><font color=\"#D00000\">(" + time.toString() + ") "
+			  + _buddy + ": </font></b>" + msg);
   }
 private slots:
   void		handleSendText()
   {
     if (!_sendText->text().isEmpty())
       {
-	_conversation->append(_me + ": " + _sendText->text());
+	QTime time = QTime::currentTime();
+	_conversation->append("<b><font color=\"#3333CC\">(" + time.toString() + ") " +
+			      _me + ": </font></b>" + _sendText->text());
 	_client->sendMessage(QString(NS_CMD_USR) + ' ' + NS_CMD_MSG_USR + ' '
 			      + _buddy + ' ' + NS_CMD_USR_MSG + ' '
 			      + Client::url_encode(_sendText->text()));

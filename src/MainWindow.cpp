@@ -5,7 +5,7 @@
 // Login   <post_l@epitech.net>
 //
 // Started on  Mon Nov 12 21:50:09 2012 ludovic post
-// Last update Sat Mar 23 23:06:08 2013 ludovic post
+// Last update Sun Mar 24 11:52:40 2013 ludovic post
 //
 
 #include "MainWindow.hpp"
@@ -23,16 +23,16 @@ MainWindow::MainWindow(QWidget *parent)
   createTrayIcon();
   // --------------- Menu Bar -------------------
   QMenu		*buddiesMenu = menuBar()->addMenu("&Buddies");
-  buddiesMenu->addAction(addBuddyAction);
-  buddiesMenu->addAction(deleteBuddyAction);
+  buddiesMenu->addAction(_addBuddyAction);
+  buddiesMenu->addAction(_deleteBuddyAction);
   buddiesMenu->addSeparator();
-  buddiesMenu->addAction(quitAction);
+  buddiesMenu->addAction(_quitAction);
   QMenu		*accountsMenu = menuBar()->addMenu("&Account");
-  accountsMenu->addAction(manageAccountAction);
+  accountsMenu->addAction(_manageAccountAction);
   QMenu		*toolsMenu = menuBar()->addMenu("&Tools");
   (void)toolsMenu;
   QMenu		*helpMenu = menuBar()->addMenu("&Help");
-  helpMenu->addAction(aboutAction);
+  helpMenu->addAction(_aboutAction);
   // ------------ Central Widget -----------------
   _tabWidget = new QTabWidget;
   _tabWidget->setTabsClosable(true);
@@ -42,24 +42,24 @@ MainWindow::MainWindow(QWidget *parent)
   //------------- Main Tab Widget ---------------
   _mainTabWidget = new QWidget;
   QVBoxLayout	*mainLayout = new QVBoxLayout;
-  _contact_list = new QListWidget;
-  _contact_list->setSortingEnabled(true);
-  connect(_contact_list, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+  _contactList = new QListWidget;
+  _contactList->setSortingEnabled(true);
+  connect(_contactList, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
 	  this, SLOT(contactSelected(QListWidgetItem*)));
-  mainLayout->addWidget(_contact_list);
-  _current_status = new QComboBox;
-  _current_status->addItem(_availableImg, "Available");
-  _current_status->addItem(_awayImg, "Away");
-  _current_status->addItem(_offlineImg, "Offline");
-  connect(_current_status, SIGNAL(currentIndexChanged(int)),
+  mainLayout->addWidget(_contactList);
+  _currentStatus = new QComboBox;
+  _currentStatus->addItem(_availableImg, "Available");
+  _currentStatus->addItem(_awayImg, "Away");
+  _currentStatus->addItem(_offlineImg, "Offline");
+  connect(_currentStatus, SIGNAL(currentIndexChanged(int)),
 	  _client, SLOT(changeStatus(int)));
-  mainLayout->addWidget(_current_status);
+  mainLayout->addWidget(_currentStatus);
   _mainTabWidget->setLayout(mainLayout);
   _tabWidget->addTab(_mainTabWidget, "&Buddy List");
   //----------------------------------------------
   setCentralWidget(_tabWidget);
   setIcon();
-  trayIcon->show();
+  _trayIcon->show();
   readSettings();
   setWindowTitle(tr("Camelsoul"));
 }
@@ -69,7 +69,7 @@ void MainWindow::connected()
   QSettings	settings;
 
   qDebug() << "Connected";
-  _current_status->setCurrentIndex(0);
+  _currentStatus->setCurrentIndex(0);
   QString	contacts_str = settings.value("account/contacts").toString();
   if (!contacts_str.isEmpty())
     {
@@ -79,7 +79,7 @@ void MainWindow::connected()
 	  QListWidgetItem	*item = new QListWidgetItem;
 	  item->setText(contact);
 	  item->setIcon(_offlineImg);
-	  _contact_list->addItem(item);
+	  _contactList->addItem(item);
 	}
     }
 }
@@ -92,20 +92,20 @@ void MainWindow::readMessage(QString message)
 void MainWindow::disconnected()
 {
   qDebug() << "Disconnected";
-  trayIcon->showMessage("Disconnected", "You've been disconnected !",
+  _trayIcon->showMessage("Disconnected", "You've been disconnected !",
 			QSystemTrayIcon::MessageIcon(2), 4000);
-  _current_status->setCurrentIndex(2);
-  _contact_list->clear();
+  _currentStatus->setCurrentIndex(2);
+  _contactList->clear();
 }
 
 void MainWindow::handleError(QString error)
 {
   qDebug() << "ERROR :" << error;
-  trayIcon->showMessage("Disconnected", "You've been disconnected !\n" + error
+  _trayIcon->showMessage("Disconnected", "You've been disconnected !\n" + error
 			+ "\nReconnection in 10 sec...",
 			QSystemTrayIcon::MessageIcon(2), 4000);
-  _current_status->setCurrentIndex(2);
-  _contact_list->clear();
+  _currentStatus->setCurrentIndex(2);
+  _contactList->clear();
   if (error != "User identification fail")
     QTimer::singleShot(10000, _client, SLOT(connectMe()));
 }
@@ -113,7 +113,7 @@ void MainWindow::handleError(QString error)
 void MainWindow::handleBuddyMessage(const QString &buddy, const QString &msg)
 {
   qDebug() << buddy << ": " << msg;
-  trayIcon->showMessage(buddy, msg,
+  _trayIcon->showMessage(buddy, msg,
 			QSystemTrayIcon::MessageIcon(1), 4000);
   for (int i = 0; i != _tabWidget->count(); ++i)
     if (_tabWidget->tabText(i) == buddy)
@@ -129,22 +129,22 @@ void MainWindow::handleBuddyMessage(const QString &buddy, const QString &msg)
 void MainWindow::changeBuddyStatus(const QString &buddy, const QString &state)
 {
   qDebug() << buddy << ": " << state;
-  for (int i = 0; i < _contact_list->count(); ++i)
-    if (_contact_list->item(i)->text() == buddy)
+  for (int i = 0; i < _contactList->count(); ++i)
+    if (_contactList->item(i)->text() == buddy)
       {
 	if (state == "actif" || state == NS_LOGIN)
-	  _contact_list->item(i)->setIcon(_availableImg);
+	  _contactList->item(i)->setIcon(_availableImg);
 	else if (state == "away")
-	  _contact_list->item(i)->setIcon(_awayImg);
+	  _contactList->item(i)->setIcon(_awayImg);
 	else
-	  _contact_list->item(i)->setIcon(_offlineImg);
+	  _contactList->item(i)->setIcon(_offlineImg);
 	return;
       }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-  if (trayIcon->isVisible())
+  if (_trayIcon->isVisible())
     {
       event->ignore();
       hide();
@@ -176,12 +176,10 @@ void MainWindow::changeMainWindowState()
 
 void MainWindow::showMessage()
 {
-  /*
-  QSystemTrayIcon::MessageIcon icon =
-    QSystemTrayIcon::MessageIcon(typeComboBox->itemData(typeComboBox->currentIndex()).toInt());
-  trayIcon->showMessage(titleEdit->text(), bodyEdit->toPlainText(), icon,
-			durationSpinBox->value() * 1000);
-  */
+  // QSystemTrayIcon::MessageIcon icon =
+  //   QSystemTrayIcon::MessageIcon(typeComboBox->itemData(typeComboBox->currentIndex()).toInt());
+  // _trayIcon->showMessage(titleEdit->text(), bodyEdit->toPlainText(), icon,
+  // 			durationSpinBox->value() * 1000);
 }
 
 void MainWindow::about()
@@ -208,20 +206,22 @@ void MainWindow::addBuddy()
       settings.setValue("account/contacts", contacts);
       item->setText(buddy);
       item->setIcon(_offlineImg);
-      _contact_list->addItem(item);
+      _contactList->addItem(item);
       _client->refreshBuddyWatch();
     }
 }
 
 void MainWindow::deleteBuddy()
 {
-  QListWidgetItem	*item = _contact_list->currentItem();
+  QListWidgetItem	*item = _contactList->currentItem();
+  if (!item)
+    return;
   QSettings		settings;
   QString		buddy = item->text();
   QString		contacts = settings.value("account/contacts").toString();
 
   settings.setValue("account/contacts", contacts.remove(QRegExp(buddy + ",?|," + buddy + '$')));
-  delete _contact_list->takeItem(_contact_list->row(item));
+  delete _contactList->takeItem(_contactList->row(item));
   _client->refreshBuddyWatch();
 }
 
@@ -252,44 +252,44 @@ void MainWindow::setIcon()
 {
   QIcon		icon(":/images/main_icon.png");
 
-  trayIcon->setIcon(icon);
+  _trayIcon->setIcon(icon);
   setWindowIcon(icon);
 }
 
 void MainWindow::createConnectActions()
 {
   // Find icon for this action
-  showListAction = new QAction("Show Buddy &List", this);
-  connect(showListAction, SIGNAL(triggered()), this, SLOT(changeMainWindowState()));
+  _showListAction = new QAction("Show Buddy &List", this);
+  connect(_showListAction, SIGNAL(triggered()), this, SLOT(changeMainWindowState()));
 
-  quitAction = new QAction(QIcon::fromTheme("application-exit"),"&Quit", this);
-  connect(quitAction, SIGNAL(triggered()), this, SLOT(aboutToQuit()));
+  _quitAction = new QAction(QIcon::fromTheme("application-exit"),"&Quit", this);
+  connect(_quitAction, SIGNAL(triggered()), this, SLOT(aboutToQuit()));
 
-  manageAccountAction = new QAction(QIcon::fromTheme("document-properties"), "&Manage Account",this);
-  connect(manageAccountAction, SIGNAL(triggered()), _manageAccountDlg, SLOT(show()));
+  _manageAccountAction = new QAction(QIcon::fromTheme("document-properties"), "&Manage Account",this);
+  connect(_manageAccountAction, SIGNAL(triggered()), _manageAccountDlg, SLOT(show()));
 
-  aboutAction = new QAction(QIcon::fromTheme("help-about"),"&About", this);
-  connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
+  _aboutAction = new QAction(QIcon::fromTheme("help-about"),"&About", this);
+  connect(_aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
-  addBuddyAction = new QAction(QIcon::fromTheme("list-add"), "&Add Buddy", this);
-  connect(addBuddyAction, SIGNAL(triggered()), this, SLOT(addBuddy()));
+  _addBuddyAction = new QAction(QIcon::fromTheme("list-add"), "&Add Buddy", this);
+  connect(_addBuddyAction, SIGNAL(triggered()), this, SLOT(addBuddy()));
 
-  deleteBuddyAction = new QAction(QIcon::fromTheme("list-remove"), "&Delete Buddy", this);
-  connect(deleteBuddyAction, SIGNAL(triggered()), this, SLOT(deleteBuddy()));
+  _deleteBuddyAction = new QAction(QIcon::fromTheme("list-remove"), "&Delete Buddy", this);
+  connect(_deleteBuddyAction, SIGNAL(triggered()), this, SLOT(deleteBuddy()));
 }
 
 void MainWindow::createTrayIcon()
 {
-  trayIconMenu = new QMenu(this);
-  trayIconMenu->addAction(showListAction);
-  trayIconMenu->addAction(manageAccountAction);
-  trayIconMenu->addSeparator();
-  trayIconMenu->addAction(quitAction);
+  _trayIconMenu = new QMenu(this);
+  _trayIconMenu->addAction(_showListAction);
+  _trayIconMenu->addAction(_manageAccountAction);
+  _trayIconMenu->addSeparator();
+  _trayIconMenu->addAction(_quitAction);
 
-  trayIcon = new QSystemTrayIcon(this);
-  trayIcon->setContextMenu(trayIconMenu);
-  trayIcon->setToolTip(tr("Camelsoul"));
-  connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+  _trayIcon = new QSystemTrayIcon(this);
+  _trayIcon->setContextMenu(_trayIconMenu);
+  _trayIcon->setToolTip(tr("Camelsoul"));
+  connect(_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
 	  this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
 }
 
