@@ -5,7 +5,7 @@
 // Login   <post_l@epitech.net>
 //
 // Started on  Thu Nov 22 00:55:06 2012 ludovic post
-// Last update Sat Mar 23 22:10:09 2013 ludovic post
+// Last update Sun Mar 24 16:19:43 2013 ludovic post
 //
 
 // Thanks to gossel_j
@@ -37,11 +37,5 @@
 #define NS_CMD_EXIT	"exit"
 #define NS_CMD_WATCH	"watch_log_user"
 #define NS_CMD_WHO	"who"
-
-// --- commande nb ---
-
-#define NO_CMD		0
-#define NB_ASK_AUTH	1
-#define NB_USR_LOG	2
 
 #endif

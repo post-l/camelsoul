@@ -5,7 +5,7 @@
 // Login   <post_l@epitech.net>
 //
 // Started on  Mon Nov 12 21:50:09 2012 ludovic post
-// Last update Sun Mar 24 11:52:40 2013 ludovic post
+// Last update Sun Mar 24 12:35:57 2013 ludovic post
 //
 
 #include "MainWindow.hpp"
@@ -172,14 +172,6 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 void MainWindow::changeMainWindowState()
 {
   setVisible(!isVisible());
-}
-
-void MainWindow::showMessage()
-{
-  // QSystemTrayIcon::MessageIcon icon =
-  //   QSystemTrayIcon::MessageIcon(typeComboBox->itemData(typeComboBox->currentIndex()).toInt());
-  // _trayIcon->showMessage(titleEdit->text(), bodyEdit->toPlainText(), icon,
-  // 			durationSpinBox->value() * 1000);
 }
 
 void MainWindow::about()

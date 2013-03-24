@@ -5,7 +5,7 @@
 // Login   <post_l@epitech.net>
 //
 // Started on  Sun Mar 24 11:29:46 2013 ludovic post
-// Last update Sun Mar 24 11:36:36 2013 ludovic post
+// Last update Sun Mar 24 12:36:11 2013 ludovic post
 //
 
 #ifndef __MAINWINDOW_H__
@@ -33,7 +33,6 @@ private slots:
   void		aboutToQuit();
   void		iconActivated(QSystemTrayIcon::ActivationReason reason);
   void		changeMainWindowState();
-  void		showMessage();
   void		about();
   void		addBuddy();
   void		deleteBuddy();

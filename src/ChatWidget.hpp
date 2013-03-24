@@ -5,7 +5,7 @@
 // Login   <post_l@epitech.net>
 //
 // Started on  Sun Dec  2 23:51:23 2012 ludovic post
-// Last update Sun Mar 24 12:24:08 2013 ludovic post
+// Last update Sun Mar 24 16:26:01 2013 ludovic post
 //
 
 #ifndef	__CHATWIDGET_HPP__
@@ -53,7 +53,7 @@ private slots:
 			      _me + ": </font></b>" + _sendText->text());
 	_client->sendMessage(QString(NS_CMD_USR) + ' ' + NS_CMD_MSG_USR + ' '
 			      + _buddy + ' ' + NS_CMD_USR_MSG + ' '
-			      + Client::url_encode(_sendText->text()));
+			      + Client::urlEncode(_sendText->text()));
 	_sendText->clear();
       }
     _sendText->setFocus();
